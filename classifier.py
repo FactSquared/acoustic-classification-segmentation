@@ -13,7 +13,7 @@ def train_pipeline(X: np.ndarray, Y: np.ndarray):
     tr_ds, te_ds, num_cats = prep_data_pipeline(X, Y, downsample=True)
     model = train(tr_ds, num_cats)
     test(model, te_ds)
-    return persist_model(model, 'saved_models/')
+    return persist_model(model, 'saved_models')
 
 
 def predict_pipeline(audio_fpath, model):
@@ -26,18 +26,19 @@ def predict_pipeline(audio_fpath, model):
     return predictions
 
 
-def prep_data_pipeline(X, Y, downsample=False):
-    # current implementation only considers binary classification (speech vs. nonspeech)
-    negs = np.where(Y != 0)[0]
-    poss = np.where(Y == 0)[0]
-    if downsample:
+def prep_data_pipeline(X, Y, downsample=False):  # TODO: re-add downsampling
+    # old implementation only considers binary classification (speech vs. nonspeech)
+    # negs = np.where(Y != 0)[0]
+    # poss = np.where(Y == 0)[0]
+    # if downsample:
         # we know for sure that negative examples (nonspeech) are much larger than the positives
-        np.random.shuffle(poss)
-        poss = poss[:len(negs)]
+    #    np.random.shuffle(poss)
+    #    poss = poss[:len(negs)]
 
-    data_idxs = np.hstack((poss, negs))
-    X_tr, X_te, Y_tr, Y_te = train_test_split(X[data_idxs], Y[data_idxs], test_size=0.1, shuffle=True)
+    #data_idxs = np.hstack((poss, negs))
+    X_tr, X_te, Y_tr, Y_te = train_test_split(X, Y, test_size=0.1, shuffle=True) #train_test_split(X[data_idxs], Y[data_idxs], test_size=0.1, shuffle=True)
     (traind, num_cats), (testd, _) = to_tf_dataset(X_tr, Y_tr), to_tf_dataset(X_te, Y_te)
+
     return traind, testd, num_cats
 
 

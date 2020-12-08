@@ -26,7 +26,7 @@ def print_durations(indexed_speech_segements, input_audio_fname, total_len=None)
         speech_sum += (end - start)
 
     if total_len is not None:
-        print(f"speech_ratio: {(speech_sum / total_len):.2%} ({speech_sum} / {total_len})", end='', flush=True)
+        print(f"applause_ratio: {(speech_sum / total_len):.2%} ({speech_sum} / {total_len})", end='', flush=True)
     print('', flush=True)
 
 
@@ -46,3 +46,9 @@ def slice_speech(indexed_speech_segements, input_audio_fname):
         output_fname = f'{output_dirname.split(os.sep)[-1]}.{str(start)}.wav'
         in_stream = ffmpeg.input(input_audio_fname, f=input_audio_fname[-3:], ss=start, t=end-start)
         in_stream.output(os.path.join(output_dirname, output_fname)).run(overwrite_output=True)
+
+
+def save_json(dict, file, dir):
+    import json
+    with open(os.path.join(dir, f'{file[1]}.json'), "w") as out:
+        json.dump(dict, out, indent=4)
