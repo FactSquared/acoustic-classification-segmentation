@@ -23,7 +23,7 @@ We provide two [pretrained models](pretrained/). Both models are trained on 3-se
 
 ### Training pipeline
 
-To train your own model, invoke `run.py` with `-t` flag and pass the directory name where training data is stored. You might also want to take a look at `extract_all` function in [`feature.py`](feature.py) to change how the labels are read in, if using corpora other than the MUSAN. 
+To train your own model, invoke `run.py` with `-t` flag and pass the directory name where training data is stored. Each file in your training set should have its label included at the start of the file name, followed by a `-`; for example `applause-mysound124.wav` (see `extract_all` function in [`feature.py`](feature.py))
 
 ## Segmentation
 
