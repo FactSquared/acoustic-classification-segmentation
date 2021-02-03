@@ -1,6 +1,7 @@
 data/**
 # saved_models/**
 venv/**
+utilities/**.wav
 
 # linux
 *~

@@ -26,7 +26,7 @@ def predict_pipeline(audio_fpath, model):
     return predictions
 
 
-def prep_data_pipeline(X, Y, downsample=False):  # TODO: re-add downsampling
+def prep_data_pipeline(X, Y, downsample=False):  # TODO: add up-sampling?
     # old implementation only considers binary classification (speech vs. nonspeech)
     # negs = np.where(Y != 0)[0]
     # poss = np.where(Y == 0)[0]
@@ -36,6 +36,7 @@ def prep_data_pipeline(X, Y, downsample=False):  # TODO: re-add downsampling
     #    poss = poss[:len(negs)]
 
     #data_idxs = np.hstack((poss, negs))
+
     X_tr, X_te, Y_tr, Y_te = train_test_split(X, Y, test_size=0.1, shuffle=True) #train_test_split(X[data_idxs], Y[data_idxs], test_size=0.1, shuffle=True)
     (traind, num_cats), (testd, _) = to_tf_dataset(X_tr, Y_tr), to_tf_dataset(X_te, Y_te)
 

@@ -6,7 +6,7 @@ import numpy as np
 MFCC_SIZE = 40
 FRAME_SIZE = 10 #milliseconds
 
-labels = {"speech": 0, "music": 1, "applause": 2 , "noise": 3, "silence": 4}
+labels = {"applause": 0, "speech": 1, "music": 2 , "noise": 3, "silence": 4}
 
 ## Extract MFCC features from audio file using Librosa
 def extract(wav_fname, normalize=False, verbose=True, **kwargs):
@@ -33,7 +33,7 @@ def index_label(label_str, binary=True):
     if label_str in labels:
         label_idx = labels[label_str]
         if binary:
-            label_idx = min(1, label_idx)
+            label_idx = min(1, label_idx) #TODO: For binary applause detection, need applause to be label 0... can I make it an argument which to detect as a binary?
         return label_idx
     else:
         return -1

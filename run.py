@@ -1,6 +1,7 @@
 import reader, feature, classifier, smoothing, writer
 import sys
 import os
+import time
 
 if __name__ == '__main__':
 
@@ -50,23 +51,41 @@ if __name__ == '__main__':
         help='Minimum segment length in milliseconds.'
     )
 
+    parser.add_argument(
+        '-c', '--cpu',
+        help='Ignore GPU, use CPU only'
+    )
+
+    parser.add_argument(
+        '-b', '--binary',
+        action='store_true',
+        help='Flag to classifying applause/not-applause only.'
+    )
+
     if len(sys.argv) == 1:
         parser.print_help(sys.stderr)
         sys.exit(1)
     args = parser.parse_args()
 
+    if args.cpu:
+        os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
+
     if args.train:
-        X, Y = feature.extract_all(reader.read_wavs(args.train), train=True, binary_class=False)
+        start = time.perf_counter()
+        X, Y = feature.extract_all(reader.read_wavs(args.train), train=True, binary_class=args.binary)
         model_path = classifier.train_pipeline(X, Y)
         print("============")
-        print("model saved at " + model_path)
+        print(f"model saved at {model_path}")
+        print(f"time elapsed: {time.perf_counter()-start:0.4f} seconds")
         print("============")
 
     if args.segment:
         for wav in reader.read_wavs(args.segment[1], file_ext=['mp3', 'wav', 'mp4']):
+            start = time.perf_counter()
             model = classifier.load_model(args.segment[0])
             predicted = classifier.predict_pipeline(wav, model)
-            smoothed = smoothing.smooth(predicted, int(args.threshold))
+            smoothed = smoothing.smooth(predicted, int(args.threshold), args.binary)
 
             if args.out:
                 writer.save_json(smoothed, wav, args.out)
+            print(f"Finished {wav} in {time.perf_counter()-start:0.4f} seconds")
