@@ -2,6 +2,7 @@
 
 Simple audio segmenter to isolate speech portion out of audio streams. Uses a simple feedforward MLP for classification (implemented using `tensorflow`) and heuristic smoothing methods to increase the recall of speech segments. 
 
+This version modified from brandeis-llc repository to use applause, speech, music, noise, and silence as possible labels, and to handle binary classification of applause (rather than speech). 
 
 ## Requirements 
 
@@ -18,7 +19,7 @@ Simple audio segmenter to isolate speech portion out of audio streams. Uses a si
 
 ### Pretrained model 
 
-We provide a [pretrained model](pretrained/). The model is trained on [MUSAN corpus](https://www.openslr.org/17/), using binary labels (`speech` vs. `nonspeech`). The model is, then, serialized using [`tensorflow::SavedModel` format](https://www.tensorflow.org/guide/keras/save_and_serialize#export_to_savedmodel). Because of the distribution bias in the corpus (a lot more of speech recordings in the training data), we randomly resampled from frames (size of 10ms) from speech examples to match its size to negative examples. In doing so, the language distribution among the resampled speech examples was NOT deliberately balanced. 
+We provide two [pretrained models](pretrained/). Both models are trained on 3-second clips from the [MUSAN corpus](https://www.openslr.org/17/), [HIPSTAS applause samples](https://github.com/hipstas/applause-classifier), and sound from Indiana University collections using the labels: `applause`, `speech`, `music`, `noise`, and`silence`. The models are, then, serialized using [`tensorflow::SavedModel` format](https://www.tensorflow.org/guide/keras/save_and_serialize#export_to_savedmodel). The `applause-binary-xxxxxxxx` model is trained to predict applause vs non-applause; the `non-binary-xxxxxxxx` model uses all the above labels. Because of the distribution bias in the corpus (a lot fewer noise and silence samples in the training data), we randomly upsampled minority classes.
 
 ### Training pipeline
 
@@ -28,19 +29,37 @@ To train your own model, invoke `run.py` with `-t` flag and pass the directory n
 
 To run the segmenter over audio files, invoke `run.py` with `-s` flag, and pass 1) model path (feel free to use the pretrained model if needed) and 2) the directory where audio files are stored. Currently it will process all `mp3` and `wav` files in the target directory. If you want to process other types of audio file, add to or change the `file_ext` list near the bottom of [`run.py`](run.py) files. 
 
-The processed results are stored as `segmented.tsv`, a tab-separated file, in the target directory. Each row of the file represents a result from a single audio file, and columns represents as follows; 
-* first column shows the file path
-* last column shows the ratio of speech portion of the file 
-* columns between are paired into start and end points (in seconds) of speech segments. 
+If you want to use binary classification, include the `-b` flag. 
+If you want to specify a minimum length of segment, use the `-T` flag and sepcify a number of milliseconds. Shorter segments will be merged with the previous one.
 
-### Using docker
-
-We also provide [`Dockerfile`](Dockerfile). If you want to run the segmenter as a docker container (not worrying about dependencies), build an image from this project directory using the `Dockerfile` and run it with the target directory mounted to `/segmenter/data`. Just MAKE SURE that target directory is writable by others (`chmod o+w $TARGET_DIR`) because a non-root user will be running the processor in the container. For example, 
-
-```bash
-git clone https://github.com/keighrim/audio-segmentation.git 
-cd audio-segmentation
-chmod -R o+w $HOME/audio-files && docker build . -t audioseg && docker run --rm -v $HOME/audio-files:/segmenter/data -it audioseg
+For example:
+```
+python run.py -s /path/to/pretrained/applause-binary-20210203 /path/to/audio -o /path/to/output/folder -T 1000 -b
 ```
 
-Once the process is done, you'll find a `segmented.tsv` file in the local target directory. 
+The processed results are stored as JSON file in the target directory named after the audio input. The JSON includes a label and start & end times in seconds. For example:
+
+```
+[
+    {
+        "label": "non-applause",
+        "start": 0.0,
+        "end": 0.64
+    },
+    {
+        "label": "applause",
+        "start": 0.65,
+        "end": 6.78
+    },
+    {
+        "label": "non-applause",
+        "start": 6.79,
+        "end": 373.83
+    },
+    {
+        "label": "applause",
+        "start": 373.84,
+        "end": 379.55
+    }
+]
+```
