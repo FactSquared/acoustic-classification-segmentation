@@ -30,7 +30,7 @@ To train your own model, invoke `run.py` with `-t` flag and pass the directory n
 To run the segmenter over audio files, invoke `run.py` with `-s` flag, and pass 1) model path (feel free to use the pretrained model if needed) and 2) the directory where audio files are stored. Currently it will process all `mp3` and `wav` files in the target directory. If you want to process other types of audio file, add to or change the `file_ext` list near the bottom of [`run.py`](run.py) files. 
 
 If you want to use binary classification, include the `-b` flag. 
-If you want to specify a minimum length of segment, use the `-T` flag and sepcify a number of milliseconds. Shorter segments will be merged with the previous one.
+If you want to specify a minimum length of segment, use the `-T` flag and specify a number of milliseconds. Shorter segments will be merged with the previous one (short segments at the beginning will be omitted).
 
 For example:
 ```
