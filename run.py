@@ -31,7 +31,7 @@ if __name__ == '__main__':
         action='store',
         nargs=2,
         help='Flag to invoke segmentation pipeline. First arg to specify model path, and second to specify directory '
-             'where wave files are.'
+             'where files are.'
     )
 
     parser.add_argument(
