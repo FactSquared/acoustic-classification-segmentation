@@ -1,5 +1,5 @@
 # Bill Notes on This Fork
-Specific detection of applause and laughter has come up in the past. I've been using a Torch event classifier from 2017, and played with a newer filter from ffmeg. But both are slow (4-6x realtim) and not great. I've tested this on a State of the Union library and it's pretty damn perfect, and runs 30x realtime. Model is simple and fast for applause and I've tested with laughter. For one-trick analysis, found performance and accuracy to be excellent.
+Specific detection of applause and laughter has come up in the past. I've been using a Torch event classifier from 2017, and played with a newer filter from ffmeg. But both are slow (4-6x realtime) and not great. I've tested this on a State of the Union library and it's pretty damn perfect, and runs 30x realtime. Model is simple and fast for applause and I've tested with laughter. For one-trick analysis, found performance and accuracy to be excellent.
 
 Note: this was on a nuclear CPU, but no GPU. Also note: I still mostly hate Tensor, but I'll take it.
 
