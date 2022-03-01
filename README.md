@@ -1,4 +1,9 @@
-# Acoustic Calssification & Segmentation 
+# Bill Notes on This Fork
+Specific detection of applause and laughter has come up in the past. I've been using a Torch event classifier from 2017, and played with a newer filter from ffmeg. But both are slow (4-6x realtim) and not great. I've tested this on a State of the Union library and it's pretty damn perfect, and runs 30x realtime. Model is simple and fast for applause and I've tested with laughter. For one-trick analysis, found performance and accuracy to be excellent.
+
+Note: this was on a nuclear CPU, but no GPU. Also note: I still mostly hate Tensor, but I'll take it.
+
+# Acoustic Classification & Segmentation 
 
 Simple audio segmenter to isolate speech portion out of audio streams. Uses a simple feedforward MLP for classification (implemented using `tensorflow`) and heuristic smoothing methods to increase the recall of speech segments. 
 
@@ -6,7 +11,7 @@ This version modified from brandeis-llc repository to use applause, speech, musi
 
 ## Requirements 
 
-* System packages: [`ffmpeg`](http://ffmpeg.org/download.html)
+* System packages: `ffmpeg`
 * Python packages: 
   * `librosa`
   * `tensorflow` or `tensorflow-gpu` `>=2.0.0`
@@ -17,7 +22,7 @@ This version modified from brandeis-llc repository to use applause, speech, musi
 
 ## Training 
 
-### Pretrained model 
+### Pre-Trained model 
 
 We provide two [pretrained models](pretrained/). Both models are trained on 3-second clips from the [MUSAN corpus](https://www.openslr.org/17/), [HIPSTAS applause samples](https://github.com/hipstas/applause-classifier), and sound from Indiana University collections using the labels: `applause`, `speech`, `music`, `noise`, and`silence`. The models are, then, serialized using [`tensorflow::SavedModel` format](https://www.tensorflow.org/guide/keras/save_and_serialize#export_to_savedmodel). The `applause-binary-xxxxxxxx` model is trained to predict applause vs non-applause; the `non-binary-xxxxxxxx` model uses all the above labels. Because of the distribution bias in the corpus (a lot fewer noise and silence samples in the training data), we randomly upsampled minority classes.
 
