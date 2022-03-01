@@ -3,6 +3,8 @@ Specific detection of applause and laughter has come up in the past. I've been u
 
 Note: this was on a nuclear CPU, but no GPU. Also note: I still mostly hate Tensor, but I'll take it.
 
+H/T to Nicholas Graham for bringing this to the forefront, and dragging me into the '20s...
+
 # Acoustic Classification & Segmentation 
 
 Simple audio segmenter to isolate speech portion out of audio streams. Uses a simple feedforward MLP for classification (implemented using `tensorflow`) and heuristic smoothing methods to increase the recall of speech segments. 
