@@ -5,6 +5,14 @@ Note: this was on a nuclear CPU, but no GPU. Also note: I still mostly hate Tens
 
 H/T to Nicholas Graham for bringing this to the forefront, and dragging me into the '20s...
 
+Note tested against 60 hours, and it nailed applause, which was the goal. Less good when not in `hot dog/not hot dog` mode.
+
+I very techically just ran this:
+
+```
+python3.6 run.py -s /home/ubuntu/gits/acoustic-classification-segmentation/pretrained/applause-binary-20210203 /home/ubuntu/data/applause/ -o /home/ubuntu/data/applause -T 1000 -b
+```
+
 # Acoustic Classification & Segmentation 
 
 Simple audio segmenter to isolate speech portion out of audio streams. Uses a simple feedforward MLP for classification (implemented using `tensorflow`) and heuristic smoothing methods to increase the recall of speech segments. 
